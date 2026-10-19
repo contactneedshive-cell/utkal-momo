@@ -1,0 +1,65 @@
+:root { --o:#e8590c; --ink:#262626; --g:#2b8a3e; --r:#c92a2a; --w:#e67700; --bg:#faf8f5; }
+* { box-sizing: border-box; }
+body { margin: 0; font: 16px system-ui, sans-serif; color: var(--ink); background: var(--bg); }
+main { padding: 12px 12px 90px; max-width: 1000px; margin: auto; }
+h1 { color: var(--o); margin-top: 0; }
+
+nav { position: fixed; bottom: 0; left: 0; right: 0; display: flex; background: #fff; border-top: 1px solid #ddd; overflow-x: auto; z-index: 5; }
+nav button { flex: 1; min-width: 64px; padding: 12px 4px; border: 0; background: none; font-size: 12px; }
+nav button.on { color: var(--o); font-weight: 700; }
+@media (min-width: 900px) {
+  nav { top: 0; right: auto; width: 180px; flex-direction: column; border: 0; border-right: 1px solid #ddd; }
+  nav button { text-align: left; font-size: 15px; padding: 14px; flex: none; }
+  main { margin-left: 200px; padding-bottom: 20px; }
+}
+
+.card { background: #fff; border-radius: 14px; padding: 14px; box-shadow: 0 1px 4px #0002; margin: 0 0 12px; }
+.gate { max-width: 380px; margin: 12vh auto 0; padding: 20px; }
+.digits { display: flex; gap: 8px; }
+.digits input { text-align: center; font-size: 28px; }
+
+.grid { display: grid; gap: 10px; grid-template-columns: repeat(2, 1fr); }
+@media (min-width: 700px) { .grid { grid-template-columns: repeat(3, 1fr); } }
+.qg { display: grid; gap: 10px; grid-template-columns: 1fr; }
+@media (min-width: 520px) { .qg { grid-template-columns: repeat(2, 1fr); } }
+@media (min-width: 1000px) { .qg { grid-template-columns: repeat(3, 1fr); } }
+
+.k small { display: block; }
+.k b { display: block; font-size: 20px; }
+.g { color: var(--g); } .r { color: var(--r); } .w { color: var(--w); }
+
+button.p { background: var(--o); color: #fff; border: 0; border-radius: 12px; padding: 15px; font-size: 17px; font-weight: 700; width: 100%; }
+button.s { border: 1px solid #bbb; background: #fff; border-radius: 10px; padding: 10px 12px; margin: 2px; }
+button:disabled { opacity: .4; }
+
+input, select, textarea { font: inherit; padding: 10px; border: 1px solid #ccc; border-radius: 10px; width: 100%; }
+label { display: block; font-size: 13px; margin: 8px 0; }
+button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible { outline: 3px solid var(--o); }
+
+.qb { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin: 8px 0; }
+.qb button { width: 56px; height: 56px; border-radius: 12px; border: 0; background: #ffe8cc; color: #d9480f; font-size: 28px; }
+.qb input { width: 84px; text-align: center; font-size: 24px; height: 56px; }
+
+table { width: 100%; border-collapse: collapse; font-size: 14px; }
+td, th { padding: 6px; border-bottom: 1px solid #eee; text-align: left; }
+.sc { overflow-x: auto; }
+.row { display: flex; gap: 8px; align-items: center; margin: 8px 0; }
+
+#toast { position: fixed; top: 10px; left: 50%; transform: translateX(-50%); background: #fff; padding: 12px 16px; border-radius: 12px; box-shadow: 0 2px 10px #0005; display: none; z-index: 9; max-width: 92vw; }
+#toast.show { display: block; }
+
+@media print { nav, button, #toast { display: none !important; } main { margin: 0; padding: 0; } }
+
+
+/* Dine / Parcel pairs: the two cards of one variety sit side by side */
+.pair { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px; }
+.pair .card { margin: 0; padding: 10px; }
+.pair .qb { gap: 4px; }
+.pair .qb button { width: 42px; height: 48px; font-size: 24px; }
+.pair .qb input { width: 48px; height: 48px; font-size: 20px; padding: 4px; }
+@media (min-width: 520px) {
+  .pair { gap: 12px; }
+  .pair .card { padding: 14px; }
+  .pair .qb button { width: 56px; height: 56px; font-size: 28px; }
+  .pair .qb input { width: 84px; height: 56px; font-size: 24px; padding: 10px; }
+}

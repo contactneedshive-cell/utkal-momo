@@ -1,6 +1,8 @@
 /* App shell: navigation, data loading, clock, start-up. Loaded last. */
 function draw() {
-  const items = [['dash', '🏠 Home'], ['stock', 'Stock'], ['waste', 'Wastage'], ['extra', 'Extra'], ['exp', 'Expenses'], ['rep', 'Reports'], ['set', 'Settings']];
+  const staff = ST.role == 'staff';                           // staff mode: no Reports or Settings
+  if (staff && (V == 'rep' || V == 'set')) V = 'dash';
+  const items = [['dash', '🏠 Home'], ['stock', 'Stock'], ['waste', 'Wastage'], ['extra', 'Extra'], ['exp', 'Expenses']].concat(staff ? [] : [['rep', 'Reports'], ['set', 'Settings']]);
   app.innerHTML = `<nav>${items.map(([k, l]) => `<button class="${V == k ? 'on' : ''}" onclick="V='${k}';draw()">${l}</button>`).join('')}<button onclick="lock()">🔒 Lock</button></nav><main id="m"></main>`;
   ({ dash: dashView, stock: stockView, waste: () => logView('waste'), extra: () => logView('extra'), exp: expView, rep: repView, set: setView })[V]();
 }

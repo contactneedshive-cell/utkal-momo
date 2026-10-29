@@ -30,12 +30,12 @@ async function login(code) {
     TK = r.token;
     sessionStorage.setItem('um_t', TK);
     localStorage.setItem('um_api', API);
-    await load();
+    if (r.state && BD == ist()) { ST = r.state; draw(); } else await load();   // login brings the first screen's data with it
   } catch (e) { gate(e.message); }
 }
 
 function lock() {
   TK = ''; sessionStorage.removeItem('um_t');
-     BD = ist(); Q = {}; EO = ''; EDISC = ''; EPAY = 'Cash'; EID = ''; ED = {}; RD = null;
+  BD = ist(); Q = {}; EO = ''; EDISC = ''; EPAY = 'Cash'; EID = ''; ED = {}; RD = null;
   gate();
 }

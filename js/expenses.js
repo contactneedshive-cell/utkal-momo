@@ -41,5 +41,5 @@ function expTotal() { $('#etot').textContent = inr(Math.round((+val('qy') || 0) 
 function expEdit(id) { EID = id; ED = ST.exp.list.find(r => r['Expense ID'] == id) || {}; draw(); scrollTo(0, 0); }
 async function expReverse(id) {
   if (!confirm('Reverse this expense? The row stays in the sheet, marked Reversed.')) return;
-  try { await call('reverseExpense', { id }); await load(); toast('Expense reversed.'); } catch (e) { toast(e.message, 1); }
+    try { await apply(await call('reverseExpense', { id })); toast('Expense reversed.'); } catch (e) { toast(e.message, 1); }
 }

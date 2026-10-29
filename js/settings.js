@@ -15,7 +15,7 @@ ${ST.all.map((v, i) => `<div class="card" style="box-shadow:none;border:1px soli
 <div class="card">${sel('md', 'Inventory mode', ['shared', 'separate'], s.mode)}
 ${fld('lo', 'Low-stock warning (pieces)', 'number', 'value="' + s.low + '"')}
 <label>Expense categories (comma separated)<textarea id="cg">${esc(s.categories.join(', '))}</textarea></label></div>
-<p class="w">Anyone who knows the access code can use this system. To change the code: Apps Script → Project Settings → Script properties → ACCESS_CODE.</p>
+<p class="w">Anyone who knows a code can use this system. Codes live in Apps Script → Project Settings → Script properties: ACCESS_CODE (staff, no profit figures) and OWNER_CODE (owner, sees everything).</p>
 <button class="p" id="go">Save settings</button>`;
   ST.all.forEach((v, i) => profLine(i));
   $('#go').onclick = e => {

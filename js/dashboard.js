@@ -30,16 +30,17 @@ function dashView() {
     ['Opening stock', s.opening, ''], ['Purchased/prepared', s.added, ''], ['Plates sold', s.plates, ''],
     ['Pieces sold', s.sold, ''], ['Remaining stock', s.closing, s.closing < low ? 'r' : 'g'], ['Wastage pieces', s.waste, 'r'],
     ['Complimentary pieces', s.extra, ''], ['Sales revenue', inr(s.revenue), 'g'], ['Cash received', inr(s.cash), 'g'],
-    ['UPI received', inr(s.upi), 'g'], ['Expenses', inr(s.expenses), 'r'], ['Est. gross profit', inr(s.gross), s.gross < 0 ? 'r' : 'g'],
-    ['Wastage + free-piece cost', inr(s.lossCost), 'r'], ['Est. net result', inr(s.net), s.net < 0 ? 'r' : 'g'], ['Net cash flow', inr(s.cashFlow), s.cashFlow < 0 ? 'r' : 'g']
+    ['UPI received', inr(s.upi), 'g'], ['Expenses', inr(s.expenses), 'r']
   ];
-  const quick = [['stock', 'Add Stock'], ['waste', 'Record Wastage'], ['extra', 'Give Extra Pieces'], ['exp', 'Add Expense'], ['rep', 'View Reports']];
-  const typeRows = [['Plates', k => ty[k].plates], ['Revenue', k => inr(ty[k].revenue)], ['Cost', k => inr(ty[k].cost)], ['Profit', k => inr(ty[k].profit)],
+  if (ST.role != 'staff') cards.push(['Wastage + free-piece cost', inr(s.lossCost), 'r'], ['Est. net result', inr(s.net), s.net < 0 ? 'r' : 'g'], ['Net cash flow', inr(s.cashFlow), s.cashFlow < 0 ? 'r' : 'g']);
+  const quick = [['stock', 'Add Stock'], ['waste', 'Record Wastage'], ['extra', 'Give Extra Pieces'], ['exp', 'Add Expense'], ['rep', 'View Reports']].filter(x => ST.role != 'staff' || x[0] != 'rep');
+  const typeRows = [['Plates', k => ty[k].plates], ['Revenue', k => inr(ty[k].revenue)],
     ['Cash received', k => inr(ty[k].cash)], ['UPI received', k => inr(ty[k].upi)], ['Other received', k => inr(ty[k].other)]];
   $('#m').innerHTML = `<h2>Utkal Momo Dashboard</h2>
 <p><span id="clk"></span><br>Business date ${BD.split('-').reverse().join('/')} · ${ST.set.mode} stock · <span class="g">Saved in Google Sheet ✔ ${esc(ST.at)}</span></p>
 <div class="grid">${cards.map(([a, b, c]) => `<div class="card k"><small>${a}</small><b class="${c}">${b}</b></div>`).join('')}</div>
-<div class="card sc"><b class="w">Dine vs Parcel</b>${tbl(['', 'Dine', 'Parcel'], typeRows.map(([n, f]) => [n, f('Dine'), f('Parcel')]))}</div>
+<div class="card sc"><b>Dine vs Parcel</b>${tbl(['', 'Dine', 'Parcel'], typeRows.map(([n, f]) => [n, f('Dine'), f('Parcel')]))}</div>
+<div class="card"><b>Top sellers today</b><br>${ST.top.length ? ST.top.map((t, i) => `${i + 1}. ${esc(t.name)} — ${t.plates} plates`).join('<br>') : 'No sales yet today.'}</div>
 <p>${quick.map(([k, l]) => `<button class="s" onclick="V='${k}';draw()">${l}</button>`).join('')}</p>
 <h3>Quick Sale</h3>
 ${EO ? `<div class="card"><b class="w">Editing order ${esc(EO)}</b><br>Change the plates, discount or payment below, then press SAVE CHANGES. <button class="s" onclick="cancelEdit()">Cancel edit</button></div>` : ''}
@@ -87,10 +88,10 @@ async function save() {
   const b = $('#sv'), editing = !!EO;
   b.disabled = true;
   try {
-    await call(editing ? 'editOrder' : 'saveOrder', { id: EO || SK, items: t.L.map(l => ({ name: l.v.name, plates: l.n })), discount: d, pay: val('pay') });
+    const r = await call(editing ? 'editOrder' : 'saveOrder', { id: EO || SK, items: t.L.map(l => ({ name: l.v.name, plates: l.n })), discount: d, pay: val('pay') });
     Q = {};                                                   // reset only after the sheet confirmed the save
     if (editing) { EO = ''; EDISC = ''; EPAY = 'Cash'; } else SK = uid();
-    await load();
+    await apply(r);
     toast(editing ? 'Order updated in the sheet.' : 'Order saved successfully! Ready for the next customer.');
   } catch (e) { toast(e.message, 1); }                        // entries stay so the operator can retry
   b.disabled = false;
@@ -120,9 +121,9 @@ function undoLast() {
 async function rev(id) {
   if (!confirm('Delete order ' + id + '? The stock is returned and the order stops counting in sales and profit. The rows stay in the sheet marked Deleted.')) return;
   try {
-    await call('deleteOrder', { id });
+    const r = await call('deleteOrder', { id });
     if (EO == id) { EO = ''; EDISC = ''; EPAY = 'Cash'; Q = {}; }
-    await load();
+    await apply(r);
     toast('Order deleted.');
   } catch (e) { toast(e.message, 1); }
 }

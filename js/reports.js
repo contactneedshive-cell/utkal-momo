@@ -21,8 +21,14 @@ ${K('Cash received', 'cash')}${K('UPI received', 'upi')}${K('Other received', 'o
 <p class="w">Profit uses the cost per plate you set in Settings (saved with every sale). Net result = revenue − cost of sales − wastage and free-piece cost − expenses. Net cash flow = money received − expenses − stock purchases. Do not enter the same ingredient purchase as both a stock cost and an expense. Expenses and stock purchases are shared by Dine and Parcel, so net cash flow is shown for the whole business.</p>
 <div class="card sc"><b>Dine vs Parcel</b>${tbl(['', 'Dine', 'Parcel'], [['Plates', RD.types.Dine.plates, RD.types.Parcel.plates], ['Revenue', inr(RD.types.Dine.revenue), inr(RD.types.Parcel.revenue)], ['Cost', inr(RD.types.Dine.cost), inr(RD.types.Parcel.cost)], ['Profit', inr(RD.types.Dine.profit), inr(RD.types.Parcel.profit)], ['Cash received', inr(RD.types.Dine.cash), inr(RD.types.Parcel.cash)], ['UPI received', inr(RD.types.Dine.upi), inr(RD.types.Parcel.upi)], ['Other received', inr(RD.types.Dine.other), inr(RD.types.Parcel.other)]])}</div>
 <div class="card sc"><b>By variety</b>${tbl(['Variety', 'Plates', 'Momos', 'Revenue', 'Cost', 'Profit', 'Profit / plate'], Object.entries(RD.vs).map(([k, v]) => [k, v.plates, v.pieces, inr(v.rev), inr(v.cost), inr(v.profit), inr(v.plates ? Math.round(v.profit * 100 / v.plates) / 100 : 0)]))}</div>
+<div class="card sc"><b>Busy hours (plates sold)</b><br>${hoursHtml()}</div>
 <div class="card sc"><b>Day by day</b>${tbl(DH, RD.days.map(dayRow))}</div>
 <div class="card sc"><b>Expenses by category</b>${tbl(['Category', 'Total'], Object.entries(RD.cs).map(([k, v]) => [k, inr(v)]))}</div>`;
+}
+
+function hoursHtml() {
+  const hs = Object.keys(RD.hours).sort(), max = Math.max(1, ...hs.map(h => RD.hours[h]));
+  return hs.length ? hs.map(h => `${h}:00 &nbsp;${'█'.repeat(Math.max(1, Math.round(RD.hours[h] * 20 / max)))} ${RD.hours[h]}`).join('<br>') : 'No sales in this period.';
 }
 
 function csv() {
